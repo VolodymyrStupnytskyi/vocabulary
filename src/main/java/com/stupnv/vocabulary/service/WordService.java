@@ -1,30 +1,48 @@
 package com.stupnv.vocabulary.service;
 
+import com.stupnv.vocabulary.db.StorageDao;
+import com.stupnv.vocabulary.model.Quiz;
 import com.stupnv.vocabulary.model.Word;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class WordService {
+    @Autowired
+    private StorageDao storageDao;
 
-    private final List<Word> wordList;
-
-    public WordService() {
-        wordList = new ArrayList<>();
-        Word word = new Word(1, "Cat", "Кіт");
-        wordList.add(word);
+    public Optional<Word> getByOriginal(String original) {
+        return storageDao.getByOriginal(original);
     }
 
     public Optional<Word> getWordById(int id) {
-        Optional<Word> optional = Optional.empty();
-        for (Word word : wordList) {
-            if (word.getId() == id) {
-                return Optional.of(word);
-            }
+        return storageDao.getById(id);
+    }
+
+    public Collection<Word> getAll() {
+        return storageDao.getAll();
+    }
+
+    public Quiz getQuiz() {
+        List<Word> words;
+        try {
+            words = new ArrayList<>(storageDao.getNUniqueItems(4));
+        } catch (Exception e) {
+            return null;
         }
-        return optional;
+
+        Quiz quiz = new Quiz();
+        quiz.setQuizWord(words.get(0));
+        Collections.shuffle(words);
+        quiz.setOptionA(words.get(0));
+        quiz.setOptionB(words.get(1));
+        quiz.setOptionC(words.get(2));
+        quiz.setOptionD(words.get(3));
+
+
+        return quiz;
+
     }
 }

@@ -12,6 +12,9 @@ public class Word {
 
     private String exampleOfUsage;
 
+    public Word() {
+    }
+
     public Word(int id, String original, String translation) {
         this.id = id;
         this.original = original;
@@ -45,4 +48,5 @@ public class Word {
     public int getId() {
         return id;
     }
+
 }
