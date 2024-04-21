@@ -24,15 +24,10 @@ public class StorageDao implements Dao<Word> {
         return optional;
     }
 
+
     @Override
     public Optional<Word> getById(int id) {
-        Optional<Word> optional = Optional.empty();
-        for (Word word : storage.getWordStorage()) {
-            if (word.getId() == id) {
-                return Optional.of(word);
-            }
-        }
-        return optional;
+        return Optional.empty();
     }
 
     @Override
@@ -77,10 +72,10 @@ public class StorageDao implements Dao<Word> {
 
     private static List<Word> defaultSet() {
         return List.of(
-                new Word(97, "Car", "Автомобіль"),
-                new Word(96, "Bicycle", "Велосипед"),
-                new Word(95, "Tractor", "Трактор"),
-                new Word(94, "Motorcycle", "Мотоцикл")
+                new Word("Car", "Автомобіль", null),
+                new Word("Bicycle", "Велосипед", null),
+                new Word("Tractor", "Трактор", null),
+                new Word("Motorcycle", "Мотоцикл", null)
         );
     }
 }
