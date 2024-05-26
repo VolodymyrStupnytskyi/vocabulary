@@ -2,6 +2,7 @@ package com.stupnv.vocabulary.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,9 +54,11 @@ public class User {
     )
     private boolean isPremium = false;
 
+    private static final int unitLimitCount = 2; // TODO use Spring property
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Word> wordList;
+    private List<Unit> unitList = new ArrayList<>();
 
     public User() {
     }
@@ -64,6 +67,10 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -90,14 +97,6 @@ public class User {
         this.email = email;
     }
 
-    public List<Word> getWordList() {
-        return wordList;
-    }
-
-    public void setWordList(List<Word> wordList) {
-        this.wordList = wordList;
-    }
-
     public boolean isPremium() {
         return isPremium;
     }
@@ -106,17 +105,41 @@ public class User {
         isPremium = premium;
     }
 
+    public List<Unit> getUnitList() {
+        return unitList;
+    }
+
+    public void setUnitList(List<Unit> unitList) {
+        this.unitList = unitList;
+    }
+
+    public void addUnit(Unit unit) throws Exception {
+        if (isPremium || unitList.size() < unitLimitCount) {
+            unitList.add(unit);
+        } else {
+            throw new Exception("Unable to add unit. User is not Premium");
+        }
+    }
+    public void deleteUnit(Unit unit) throws Exception {
+        if (isPremium || unitList.size() < unitLimitCount) {
+            unitList.add(unit);
+        } else {
+            throw new Exception("Unable to add unit. User is not Premium");
+        }
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(wordList, user.wordList);
+        return isPremium == user.isPremium && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(unitList, user.unitList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, email, wordList);
+        return Objects.hash(firstName, lastName, email, isPremium, unitList);
     }
 
     @Override
@@ -125,7 +148,8 @@ public class User {
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", wordList=" + wordList +
+                ", isPremium=" + isPremium +
+                ", unitList=" + unitList +
                 '}';
     }
 }

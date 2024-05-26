@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.Objects;
-
+// TODO: Add supporting of several meanings and corresponding example of usages
 @Entity()
 @Table(name = "word")
 public class Word {
@@ -51,25 +51,30 @@ public class Word {
     private String exampleOfUsage;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "unit_id")
     @JsonIgnore
-    private User user;
+    private Unit unit;
 
     public Word() {
     }
 
-    public Word(String original, String translation, User user) {
+    public Word(String original, String translation) {
         this.original = original;
         this.translation = translation;
-        this.user = user;
     }
 
-    public Word(String original, String transcription, String translation, String exampleOfUsage, User user) {
+    public Word(String original, String translation, Unit unit) {
+        this.original = original;
+        this.translation = translation;
+        this.unit = unit;
+    }
+
+    public Word(String original, String transcription, String translation, String exampleOfUsage, Unit unit) {
         this.original = original;
         this.transcription = transcription;
         this.translation = translation;
         this.exampleOfUsage = exampleOfUsage;
-        this.user = user;
+        this.unit = unit;
     }
 
     public String getOriginal() {
@@ -104,12 +109,18 @@ public class Word {
         this.exampleOfUsage = exampleOfUsage;
     }
 
-    public User getUser() {
-        return user;
+
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, original, transcription, translation, exampleOfUsage, unit);
     }
 
     @Override
@@ -117,12 +128,7 @@ public class Word {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Word word = (Word) o;
-        return Objects.equals(original, word.original) && Objects.equals(transcription, word.transcription) && Objects.equals(translation, word.translation) && Objects.equals(exampleOfUsage, word.exampleOfUsage) && Objects.equals(user, word.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(original, transcription, translation, exampleOfUsage, user);
+        return Objects.equals(original, word.original) && Objects.equals(transcription, word.transcription) && Objects.equals(translation, word.translation) && Objects.equals(exampleOfUsage, word.exampleOfUsage) && Objects.equals(unit, word.unit);
     }
 
     @Override
@@ -132,7 +138,7 @@ public class Word {
                 ", transcription='" + transcription + '\'' +
                 ", translation='" + translation + '\'' +
                 ", exampleOfUsage='" + exampleOfUsage + '\'' +
-                ", user=" + user +
+                ", unit=" + unit +
                 '}';
     }
 }
